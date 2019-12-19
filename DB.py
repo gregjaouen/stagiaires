@@ -3,6 +3,8 @@
 
 from Maker import Maker
 
+import MySQLdb
+
 class DB(Maker):
 
     DB_HOST = "localhost"
