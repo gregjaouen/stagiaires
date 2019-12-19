@@ -60,22 +60,22 @@ class DB(Maker):
             self.cur.execute(self.__getCreateUserCmd())
 
     def __isDBUserExists(self):
-        self.cur.execute("SELECT user from mysql.user WHERE user={:s}".format(self.getDatabaseUser()))
+        self.cur.execute("SELECT `user` from mysql.user WHERE `user` = \"{:s}\";".format(self.getDatabaseUser()))
         return self.cur.fetchone() == None
 
     def __getCreateDatabaseCmd(self):
-        return "create database {:s}".format(self.getDatabaseName())
+        return "create database {:s};".format(self.getDatabaseName())
 
     def __getCreateUserCmd(self):
-        return "create user '{:s}'@localhost identified by '{:s}'".format(self.getDatabaseUser(), )
+        return "create user '{:s}'@localhost identified by '{:s}';".format(self.getDatabaseUser(), )
 
     def __getGrantUserCmd(self):
-        return "grant all on {:s}.* to '{:s}'@'localhost' identified by '{:s}'".format(self.getDatabaseName(), self.getDatabaseUser(), self.getDatabaseUserPassword())
+        return "grant all on {:s}.* to '{:s}'@'localhost' identified by '{:s}';".format(self.getDatabaseName(), self.getDatabaseUser(), self.getDatabaseUserPassword())
 
     def __initCursor(self):
         db = MySQLdb.connect(host=self.DB_HOST, user=self.DB_USER, passwd=self.DB_PASSWD, db=self.DB_TYPE) 
         self.cur = db.cursor()
 
     def createChecker(self):
-        self.cur.execute("SHOW DATABASES LIKE '"+ utilisateur +"';")
+        self.cur.execute("SHOW DATABASES LIKE '{:s}';".format(self.getDatabaseName()))
         return self.cur.fetchone() == None
