@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 # TODO: Throw exceptions in users
 
 from User import User

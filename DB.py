@@ -1,6 +1,7 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from Maker import Maker
-
-
 
 class DB(Maker):
 
