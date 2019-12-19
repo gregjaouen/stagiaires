@@ -67,7 +67,7 @@ class DB(Maker):
         return "create database {:s};".format(self.getDatabaseName())
 
     def __getCreateUserCmd(self):
-        return "create user '{:s}'@localhost identified by '{:s}';".format(self.getDatabaseUser())
+        return "create user '{:s}'@localhost identified by '{:s}';".format(self.getDatabaseUser(), self.getDatabaseUserPassword())
 
     def __getGrantUserCmd(self):
         return "grant all on {:s}.* to '{:s}'@'localhost' identified by '{:s}';".format(self.getDatabaseName(), self.getDatabaseUser(), self.getDatabaseUserPassword())
