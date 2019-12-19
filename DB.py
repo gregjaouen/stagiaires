@@ -61,13 +61,13 @@ class DB(Maker):
 
     def __isDBUserExists(self):
         self.cur.execute("SELECT `user` from mysql.user WHERE `user` = \"{:s}\";".format(self.getDatabaseUser()))
-        return self.cur.fetchone() == None
+        return self.cur.fetchone() != None
 
     def __getCreateDatabaseCmd(self):
         return "create database {:s};".format(self.getDatabaseName())
 
     def __getCreateUserCmd(self):
-        return "create user '{:s}'@localhost identified by '{:s}';".format(self.getDatabaseUser(), )
+        return "create user '{:s}'@localhost identified by '{:s}';".format(self.getDatabaseUser())
 
     def __getGrantUserCmd(self):
         return "grant all on {:s}.* to '{:s}'@'localhost' identified by '{:s}';".format(self.getDatabaseName(), self.getDatabaseUser(), self.getDatabaseUserPassword())
