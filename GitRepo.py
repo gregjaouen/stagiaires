@@ -65,7 +65,7 @@ class GitRepo(Maker):
     def __getChownReposCmd(self):
         out = ""
         for repo in [self.getRepoPath(), self.getClonePath()]:
-            out += "chown -R {:s} {:s} && ".format(self.user.username, repo)
+            out += "chown -R {:s} {:s} && ".format(self.user.getUserAndGroup(), repo)
         return out[:-4]
 
     def __getCdWrapperCmd(self, dirTarget, cmd):

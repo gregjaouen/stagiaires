@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+#TODO: Handle username verification
+
 from Maker import Maker
 from GitRepo import GitRepo
 from DB import DB
@@ -65,8 +67,11 @@ class User(Maker):
     def getGitPath(self):
         return self.__getHomeDirsStr([self.DEFAULT_GIT_DIRECTORY]).strip()
 
+    def getUserAndGroup(self):
+        return "{:s}:{:s}".format(self.username, self.DEFAULT_GROUP)
+
     def __getUseradd(self):
-        return "useradd -d {:s} -G {:s} -p {:s} -s {:s} {:s}".format(
+        return "useradd -d {:s} -g {:s} -p {:s} -s {:s} {:s}".format(
             self.getHomePath(),
             self.DEFAULT_GROUP,
             crypt.crypt(self.password, self.password[:2]), 
@@ -77,7 +82,7 @@ class User(Maker):
         return "mkdir -p{:s}".format(self.__getHomeDirsStr(dirList))
 
     def __getChownUserHome(self):
-        return "chown -R {:s}:{:s} {:s}".format(self.username, self.DEFAULT_GROUP, self.getHomePath())
+        return "chown -R {:s} {:s}".format(self.getUserAndGroup(), self.getHomePath())
 
     # def __getChownInUser(self, dirList):
     #     return "chown -R {:s}:{:s}{:s}".format(self.username, self.DEFAULT_GROUP, self.__getHomeDirsStr(dirList))
