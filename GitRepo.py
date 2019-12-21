@@ -17,6 +17,10 @@ class GitRepo(Maker):
         self.setRepoName(repoName)
         self.setUser(user)
 
+    def create(self):
+        super().create()
+        self.__writePostReceiveHook()
+
     def getCreateName(self):
         return self.repoName
     
@@ -24,8 +28,7 @@ class GitRepo(Maker):
         return [
             self.__getGitInitCmd(),
             self.__getGitCloneCmd(),
-            self.__getChownReposCmd(),
-            self.__writePostReceiveHook()
+            self.__getChownReposCmd()
         ]
 
     def createChecker(self):
