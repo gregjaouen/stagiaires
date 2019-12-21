@@ -19,7 +19,7 @@ class Maker:
             self.__printIn(colorama.Fore.GREEN, "Create {:s} {:s}: ".format(self. CREATION_TYPE, self.getCreateName()))
             for cmd in self.getCmdToDo():
                 self.__printIn(colorama.Fore.YELLOW, "{:s}".format(cmd))
-                # self.execute(cmd)
+                self.execute(cmd)
 
     def __printIn(self, color, text):
         print (color + text + colorama.Fore.WHITE, flush=True)
