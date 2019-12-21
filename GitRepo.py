@@ -97,7 +97,8 @@ do
 		echo "   \=============================="
 	fi
 
-done""".format(self.getClonePath(), self.repoName)
+done
+""".format(self.getClonePath(), self.repoName)
         return out
 
     def __makeRepoPath(self, sourcePath):
