@@ -24,7 +24,8 @@ class GitRepo(Maker):
         return [
             self.__getGitInitCmd(),
             self.__getGitCloneCmd(),
-            self.__getChownReposCmd()
+            self.__getChownReposCmd(),
+            self.__writePostReceiveHook()
         ]
 
     def createChecker(self):
