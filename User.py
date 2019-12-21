@@ -14,7 +14,7 @@ class User(Maker):
 
     DEFAULT_HOME = "/home/stagiaires"
     DEFAULT_SHELL = "/usr/bin/git-shell"
-    DEFAULT_GROUP = "stagiaires"
+    DEFAULT_GROUP = "git"
     DEFAULT_WEB_DIRECTORY = "web"
     DEFAULT_GIT_DIRECTORY = "git"
     DEFAULT_USER_DIRECTORIES = [DEFAULT_WEB_DIRECTORY, DEFAULT_GIT_DIRECTORY]
