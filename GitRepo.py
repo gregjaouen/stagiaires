@@ -27,7 +27,7 @@ class GitRepo(Maker):
     def getCmdToDo(self):
         return [
             self.__getGitInitCmd(),
-            self.__getGitCloneCmd(),
+            self.__getMkdirWebCmd(),
             self.__getChownReposCmd()
         ]
 
@@ -43,7 +43,7 @@ class GitRepo(Maker):
     def getRepoPath(self):
         return self.__makeRepoPath(self.user.getGitPath())
 
-    def getClonePath(self):
+    def getWebPath(self):
         return self.__makeRepoPath(self.user.getWebPath())
 
     def getPostReceivePath(self):
@@ -65,15 +65,13 @@ class GitRepo(Maker):
             "git init --bare {:s}".format(self.getRepoPath())
         )
 
-    def __getGitCloneCmd(self):
-        return self.__getCdWrapperCmd(
-            self.user.getWebPath(),
-            "git clone file://{:s}".format(self.getRepoPath())
-        )
+    def __getMkdirWebCmd(self):
+        return "mkdir {:s}".format(self.getWebPath())
+
 
     def __getChownReposCmd(self):
         out = ""
-        for repo in [self.getRepoPath(), self.getClonePath()]:
+        for repo in [self.getRepoPath(), self.getWebPath()]:
             out += "chown -R {:s} {:s} && ".format(self.user.getUserAndGroup(), repo)
         return out[:-4]
 
@@ -81,7 +79,7 @@ class GitRepo(Maker):
         return "old_dir=\"$PWD\" && cd {:s} && {:s}; cd \"$old_dir\"; old_dir=\"\"".format(dirTarget, cmd)
 
     def __isOneOfDirsExist(self):
-        for pathToTest in [self.getRepoPath(), self.getClonePath()]:
+        for pathToTest in [self.getRepoPath(), self.getWebPath()]:
             if os.path.exists(pathToTest):
                 return True
         return False
@@ -104,7 +102,7 @@ do
 
 done
 
-""".format(self.getClonePath(), self.repoName)
+""".format(self.getWebPath(), self.repoName)
         return out
 
     def __makeRepoPath(self, sourcePath):
