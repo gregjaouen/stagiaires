@@ -53,6 +53,11 @@ class GitRepo(Maker):
         ## use try block
         with open(self.getPostReceivePath(), 'w+') as f:
             f.write(self.__generatePostReceiveHook())
+        self.execute(self.__getChmodHookCmd())
+        
+
+    def __getChmodHookCmd(self):
+        return "chmod +x {:s}".format(self.getPostReceivePath())
 
     def __getGitInitCmd(self):
         return self.__getCdWrapperCmd(
@@ -98,6 +103,7 @@ do
 	fi
 
 done
+
 """.format(self.getClonePath(), self.repoName)
         return out
 
