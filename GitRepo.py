@@ -98,15 +98,22 @@ function isComposer() {{
 function doComposer() {{
     if isComposer "$1"
     then
+        old_dir="$PWD"
+        cd "$1"
         composer install --no-dev --optimize-autoloader
+        cd "$old_dir"
     fi
 }}
 
 function doSymfony() {{
     if isSymfony "$1"
     then
+        old_dir="$PWD"
+        cd "$1"
         APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
+        cd "$old_dir"
     fi
+    ls $1/bin/console
 }}
 
 work_folder="{webPath}"
