@@ -87,29 +87,29 @@ class GitRepo(Maker):
     def __generatePostReceiveHook(self):
         out = """#!/bin/sh
 
-function isSymfony() {
+function isSymfony() {{
     [ -f $1/bin/console ]
-}
+}}
 
-function isComposer() {
+function isComposer() {{
     [ -f $1/composer.json ]
-}
+}}
 
-function doComposer() {
+function doComposer() {{
     if isComposer "$1"
     then
         composer install --no-dev --optimize-autoloader
     fi
-}
+}}
 
-function doSymfony() {
+function doSymfony() {{
     if isSymfony "$1"
     then
         APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
     fi
-}
+}}
 
-work_folder="{:s}"
+work_folder="{webPath}"
 
 while read oldrev newrev ref
 do
@@ -123,13 +123,13 @@ do
 		echo "   /==============================="
 		echo "   | DEPLOYMENT COMPLETED"
 		echo "   | Target branch: $branch"
-		echo "   | project folder: {:s}"
+		echo "   | project folder: {projectName}"
 		echo "   \=============================="
 	fi
 
 done
 
-""".format(self.getWebPath(), self.repoName)
+""".format(webPath = self.getWebPath(), projectName = self.repoName)
         return out
 
     def __makeRepoPath(self, sourcePath):
