@@ -87,12 +87,39 @@ class GitRepo(Maker):
     def __generatePostReceiveHook(self):
         out = """#!/bin/sh
 
+function isSymfony() {
+    [ -f $1/bin/console ]
+}
+
+function isComposer() {
+    [ -f $1/composer.json ]
+}
+
+function doComposer() {
+    if isComposer "$1"
+    then
+        composer install --no-dev --optimize-autoloader
+    fi
+}
+
+function doSymfony() {
+    if isSymfony "$1"
+    then
+        APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
+    fi
+}
+
+work_folder="{:s}"
+
 while read oldrev newrev ref
 do
 	branch=`echo $ref | cut -d/ -f3`
 	if [ "$branch" == "master" ]
 	then
-		GIT_WORK_TREE={:s} git checkout -f master
+		GIT_WORK_TREE="$work_folder" git checkout -f master
+        doComposer "$work_folder"
+        doSymfony "$work_folder"
+
 		echo "   /==============================="
 		echo "   | DEPLOYMENT COMPLETED"
 		echo "   | Target branch: $branch"
