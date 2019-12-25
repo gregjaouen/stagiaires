@@ -113,7 +113,6 @@ function doSymfony() {{
         APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
         cd "$old_dir"
     fi
-    ls $1/bin/console
 }}
 
 work_folder="{webPath}"
