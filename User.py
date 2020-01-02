@@ -9,6 +9,7 @@ from DB import DB
 
 import os
 import crypt
+import re
 
 class User(Maker):
 
@@ -35,6 +36,10 @@ class User(Maker):
         self.db.create()
 
     def setUsername(self, username):
+        prog = re.compile("^[a-z][a-z0-9]{2,8}$")
+        result = prog.match(username)
+        if result is None:
+            raise Exception("L'identifiant ne peut contenir que des lettres minuscules, des chiffres et ne peut pas dépasser 8 caratères  [a-z][a-z0-9]{2,7} ")
         self.username = username
 
     def setPassword(self, password):
