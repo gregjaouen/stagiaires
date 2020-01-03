@@ -148,7 +148,7 @@ done
         ]
 
     def deleteChecker(self):
-        return (self.isHomeDirectoryExists())
+        return (self.__isOneOfDirsExist())
 
     def __getRmdirGitCmd(self):
         return "rm -Rf {:s}".format(self.getRepoPath())
