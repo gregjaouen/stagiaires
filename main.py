@@ -65,6 +65,7 @@ if p.hasActions("new", "user"):
 elif p.hasActions("new", "repo"):
     user = User(options["username"], "")
     user.createNewGitRepo(options["reponame"])
+    user.createDBForGitRepo()
 elif p.hasActions("delete", "user"):
     user = User(options["username"], "")
     user.delete()
