@@ -56,8 +56,8 @@ PATTERN = {
 }
 
 p = ARGVParser(PATTERN)
+options = p.getOptions()
 if p.hasActions("new", "user"):
-    options = p.getOptions()
     user = User(options["username"], options["password"])
     user.create()
     user.createDBUser()

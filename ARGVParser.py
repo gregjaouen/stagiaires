@@ -19,7 +19,10 @@ class ARGVParser:
         return True
     
     def getOptions(self):
-        return self.parsed[-1]
+        try:
+            return self.parsed[-1]
+        except (NameError, IndexError):
+            return []
 
     def __parseFromLevel(self, index, patternLevel):
         if index < len(self.rawArgs):
