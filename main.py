@@ -2,21 +2,15 @@
 # -*- coding: utf-8 -*-
 
 # TODO: Throw exceptions in users
+# TODO: Add print cmd for static usage
+# TODO: Throw exceptions in static DB
+# TODO: Implement Edit and List
+# TODO: Implement help command and man page
 
 from User import User
 from GitRepo import GitRepo
 from DB import DB
 from ARGVParser import ARGVParser
-
-# import sys
-# #utilisateur = input("Nom d'utilisateur:")
-# #mot_de_passe = input("Mot de passe:")
-# if len(sys.argv)<4:
-#     sys.exit('Usage: stagiaire.py identifiant motdepasse repository' )
-
-# utilisateur = sys.argv[1]
-# mot_de_passe = sys.argv[2]
-# repository = sys.argv[3]
 
 PATTERN = {
     "new" : {
@@ -91,8 +85,3 @@ elif p.hasActions("list", "repo"):
     pass
 elif p.hasActions("list", "db"):
     pass
-
-# user = User(utilisateur, mot_de_passe)
-# user.create()
-# user.createNewGitRepo(repository)
-# user.createDBForGitRepo()
