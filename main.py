@@ -4,6 +4,7 @@
 # TODO: Throw exceptions in users
 
 from User import User
+from GitRepo import GitRepo
 from ARGVParser import ARGVParser
 
 # import sys
@@ -30,6 +31,7 @@ PATTERN = {
             "username"
         ],
         "repo": [
+            "username",
             "reponame"
         ]
     },
@@ -57,12 +59,18 @@ p = ARGVParser(PATTERN)
 if p.hasActions("new", "user"):
     options = p.getOptions()
     user = User(options["username"], options["password"])
+    user.create()
+    user.createDBUser()
 elif p.hasActions("new", "repo"):
-    pass
+    user = User(options["username"])
+    user.createNewGitRepo(options["reponame"])
 elif p.hasActions("delete", "user"):
-    pass
+    user = User(options["username"], options["password"])
+    user.delete()
 elif p.hasActions("delete", "repo"):
-    pass
+    user = User(options["username"], "")
+    repo = GitRepo(options["reponame"], user)
+    repo.delete()
 elif p.hasActions("edit", "user"):
     pass
 elif p.hasActions("edit", "user", "username"):

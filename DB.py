@@ -12,7 +12,7 @@ class DB(Maker):
     DB_PASSWD = "lf3Emd4R"
     DB_TYPE = "mysql"
 
-    CREATION_TYPE = "database"
+    ACTION_TYPE = "database"
 
 
     def __init__(self, user, gitRepo):
@@ -31,10 +31,10 @@ class DB(Maker):
     def execute(self, cmd):
         self.cur.execute(cmd)
 
-    def getCreateName(self):
+    def getActionPerformedTo(self):
         return self.getDatabaseName()
 
-    def getCmdToDo(self):
+    def getCmdToCreate(self):
         return [
             self.__getCreateDatabaseCmd(),
             self.__getGrantUserCmd()
@@ -55,10 +55,14 @@ class DB(Maker):
     def setGitRepo(self, gitRepo):
         self.gitRepo = gitRepo
 
+    @staticmethod
+    def createDatabaseUser(user):
+        DB(user, "")
+
     def __createDatabaseUser(self):
         if not self.__isDBUserExists():
             self.cur.execute(self.__getCreateUserCmd())
-
+    
     def __isDBUserExists(self):
         self.cur.execute("SELECT `user` from mysql.user WHERE `user` = \"{:s}\";".format(self.getDatabaseUser()))
         return self.cur.fetchone() != None
