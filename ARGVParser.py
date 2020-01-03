@@ -22,7 +22,7 @@ class ARGVParser:
         return self.parsed[-1]
 
     def __parseFromLevel(self, index, patternLevel):
-        if index < len(self.rawArgs[index]):
+        if index < len(self.rawArgs):
             arg = self.rawArgs[index]
             if type(patternLevel) == dict:
                 if arg in patternLevel:
