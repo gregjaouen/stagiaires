@@ -5,6 +5,7 @@
 
 from User import User
 from GitRepo import GitRepo
+from DB import DB
 from ARGVParser import ARGVParser
 
 # import sys
@@ -67,9 +68,13 @@ elif p.hasActions("new", "repo"):
 elif p.hasActions("delete", "user"):
     user = User(options["username"], "")
     user.delete()
+    DB.deleteAllDBWithPrefix(options["username"])
+    DB.deleteUser(options["username"])
 elif p.hasActions("delete", "repo"):
     user = User(options["username"], "")
     repo = GitRepo(options["reponame"], user)
+    db = DB(user, repo)
+    db.delete()
     repo.delete()
 elif p.hasActions("edit", "user"):
     pass

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#TODO: Handle username verification
+#TODO: Better handling username verification
 
 from Maker import Maker
 from GitRepo import GitRepo
@@ -28,7 +28,7 @@ class User(Maker):
         self.setPassword(password)
 
     def createDBUser(self):
-        DB.createDatabaseUser(self)
+        DB.createUser(self)
 
     def createNewGitRepo(self, repoName):
         self.gitRepo = GitRepo(repoName, self)
