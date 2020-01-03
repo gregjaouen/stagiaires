@@ -91,20 +91,20 @@ class DB(Maker):
         self.cur = DB.getCursor()
 
     @staticmethod
-    def createUser(cls, user):
+    def createUser(user):
         DB(user, "")
 
-    @staticmethod
+    @classmethod
     def deleteUser(cls, user):
         cur = cls.getCursor()
         cur.execute("DROP USER '{:s}'@localhost;".format(user))
 
-    @staticmethod
+    @classmethod
     def getCursor(cls):
         db = MySQLdb.connect(host=cls.DB_HOST, user=cls.DB_USER, passwd=cls.DB_PASSWD, db=cls.DB_TYPE) 
         return db.cursor()
 
-    @staticmethod
+    @classmethod
     def deleteAllDBWithPrefix(cls, prefix):
         cur = cls.getCursor()
         if cur.execute("SHOW DATABASES LIKE '{:s}__%';".format(prefix)) != 0:
