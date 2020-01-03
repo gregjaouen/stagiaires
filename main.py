@@ -65,7 +65,7 @@ elif p.hasActions("new", "repo"):
     user = User(options["username"], "")
     user.createNewGitRepo(options["reponame"])
 elif p.hasActions("delete", "user"):
-    user = User(options["username"], options["password"])
+    user = User(options["username"], "")
     user.delete()
 elif p.hasActions("delete", "repo"):
     user = User(options["username"], "")
