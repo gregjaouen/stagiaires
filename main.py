@@ -62,7 +62,7 @@ if p.hasActions("new", "user"):
     user.create()
     user.createDBUser()
 elif p.hasActions("new", "repo"):
-    user = User(options["username"])
+    user = User(options["username"], "")
     user.createNewGitRepo(options["reponame"])
 elif p.hasActions("delete", "user"):
     user = User(options["username"], options["password"])
