@@ -110,4 +110,4 @@ class DB(Maker):
         if cur.execute("SHOW DATABASES LIKE '{:s}__%';".format(prefix)) != 0:
             dbs = cur.fetchall()
             for dbRow in dbs:
-                cur.execute("DROP DATABASE '{:s}';".format(dbRow[0]))
+                cur.execute("DROP DATABASE {:s};".format(dbRow[0]))
