@@ -7,7 +7,11 @@ import os
 
 class GitRepo(Maker):
 
-    DEFAULT_GIT_DIRECTORIES = ["web", "git"]
+    DEFAULT_GIT_ROOT = "/home"
+    DEFAULT_GIT_DEPOSITE = "depots"
+    DEFAULT_GIT_PUBLIC = "sites"
+    DEFAULT_SERVER_USER = "www-data"
+
     POST_RECEIVE = "post-receive"
 
     ACTION_TYPE = "git repository"
@@ -19,7 +23,7 @@ class GitRepo(Maker):
 
     def create(self):
         super().create()
-        self.__writePostReceiveHook()
+        # self.__writePostReceiveHook()
 
     def getActionPerformedTo(self):
         return self.repoName
@@ -41,10 +45,10 @@ class GitRepo(Maker):
         self.user = user
 
     def getRepoPath(self):
-        return self.__makeRepoPath(self.user.getGitPath())
+        return self.__makePath(self.DEFAULT_GIT_DEPOSITE)
 
     def getWebPath(self):
-        return self.__makeRepoPath(self.user.getWebPath())
+        return self.__makePath(self.DEFAULT_GIT_PUBLIC)
 
     def getPostReceivePath(self):
         return "{:s}/hooks/{:s}".format(self.getRepoPath(), self.POST_RECEIVE)
@@ -60,10 +64,7 @@ class GitRepo(Maker):
         return "chmod +x {:s}".format(self.getPostReceivePath())
 
     def __getGitInitCmd(self):
-        return self.__getCdWrapperCmd(
-            self.user.getGitPath(),
-            "git init --bare {:s}".format(self.getRepoPath())
-        )
+        return "git init --bare {:s}".format(self.getRepoPath())
 
     def __getMkdirWebCmd(self):
         return "mkdir {:s}".format(self.getWebPath())
@@ -72,11 +73,14 @@ class GitRepo(Maker):
     def __getChownReposCmd(self):
         out = ""
         for repo in [self.getRepoPath(), self.getWebPath()]:
-            out += "chown -R {:s} {:s} && ".format(self.user.getUserAndGroup(), repo)
-        return out[:-4]
+            out += "chown -R {user:s}:{user:s} {repo:s} && ".format(
+                user=self.DEFAULT_SERVER_USER,
+                repo=repo
+            )
+        return out[:-4] # :-4 for removing last ' && '
 
-    def __getCdWrapperCmd(self, dirTarget, cmd):
-        return "old_dir=\"$PWD\" && cd {:s} && {:s}; cd \"$old_dir\"; old_dir=\"\"".format(dirTarget, cmd)
+    # def __getCdWrapperCmd(self, dirTarget, cmd):
+    #     return "old_dir=\"$PWD\" && cd {:s} && {:s}; cd \"$old_dir\"; old_dir=\"\"".format(dirTarget, cmd)
 
     def __isOneOfDirsExist(self):
         for pathToTest in [self.getRepoPath(), self.getWebPath()]:
@@ -95,11 +99,18 @@ function isComposer() {{
     [ -f $1/composer.json ]
 }}
 
+function addEnvLocal() {{
+    if [ ! -f ".env.local" ]; then
+        echo "APP_ENV=prod" >> ".env.local"
+    fi
+}}
+
 function doComposer() {{
     if isComposer "$1"
     then
         old_dir="$PWD"
         cd "$1"
+        addEnvLocal()
         composer install --no-dev --optimize-autoloader
         cd "$old_dir"
     fi
@@ -115,7 +126,7 @@ function doSymfony() {{
     fi
 }}
 
-work_folder="{webPath}"
+work_folder="{webPath:s}"
 
 while read oldrev newrev ref
 do
@@ -129,7 +140,7 @@ do
 		echo "   /==============================="
 		echo "   | DEPLOYMENT COMPLETED"
 		echo "   | Target branch: $branch"
-		echo "   | project folder: {projectName}"
+		echo "   | project folder: {projectName:s}"
 		echo "   \=============================="
 	fi
 
@@ -138,8 +149,13 @@ done
 """.format(webPath = self.getWebPath(), projectName = self.repoName)
         return out
 
-    def __makeRepoPath(self, sourcePath):
-        return "{:s}/{:s}".format(sourcePath, self.repoName)
+    def __makePath(self, path):
+        return "{source:s}/{path:s}/{user:s}/{project:s}".format(
+            source=self.DEFAULT_GIT_ROOT, 
+            path=path, 
+            user=self.user.username, 
+            project=self.repoName
+        )
 
     def getCmdToDelete(self):
         return [
