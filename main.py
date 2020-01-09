@@ -2,28 +2,86 @@
 # -*- coding: utf-8 -*-
 
 # TODO: Throw exceptions in users
+# TODO: Add print cmd for static usage
+# TODO: Throw exceptions in static DB
+# TODO: Implement Edit and List
+# TODO: Implement help command and man page
 
 from User import User
+from GitRepo import GitRepo
+from DB import DB
+from ARGVParser import ARGVParser
 
-import sys
-import re
+PATTERN = {
+    "new" : {
+        "user" : [
+            "username", "password"
+        ],
+        "repo" : [
+            "username", "reponame"
+        ]
+    },
+    "delete": {
+        "user": [
+            "username"
+        ],
+        "repo": [
+            "username",
+            "reponame"
+        ]
+    },
+    "edit": {
+        "user" : {
+            "username": ["username"],
+            "password": ["password"],
+        },
+        "repo" : {
+            "reponame": ["reponame"]
+        }
+    },
+    "list" : {
+        "user": [],
+        "repo": [
+            "username"
+        ] ,
+        "db" : [
+            "username"
+        ]
+    }
+}
 
-#utilisateur = input("Nom d'utilisateur:")
-#mot_de_passe = input("Mot de passe:")
-if len(sys.argv)<4:
-    sys.exit('Usage: stagiaire.py identifiant motdepasse repository' )
-
-utilisateur = sys.argv[1]
-mot_de_passe = sys.argv[2]
-repository = sys.argv[3]
-
-prog = re.compile("^[a-z][a-z0-9]{2,8}$")
-result = prog.match(utilisateur)
-
-if result is None:
-    sys.exit("L'identifiant ne peut contenir que des lettres minuscules, des chiffres et ne peut pas dépasser 8 caratères  [a-z][a-z0-9]{2,7} ")
-
-user = User(utilisateur, mot_de_passe)
-user.create()
-user.createNewGitRepo(repository)
-user.createDBForGitRepo()
+p = ARGVParser(PATTERN)
+options = p.getOptions()
+if p.hasActions("new", "user"):
+    user = User(options["username"], options["password"])
+    user.create()
+    user.createDBUser()
+elif p.hasActions("new", "repo"):
+    user = User(options["username"], "")
+    user.createNewGitRepo(options["reponame"])
+    user.createDBForGitRepo()
+elif p.hasActions("delete", "user"):
+    user = User(options["username"], "")
+    user.delete()
+    DB.deleteAllDBWithPrefix(options["username"])
+    DB.deleteUser(options["username"])
+elif p.hasActions("delete", "repo"):
+    user = User(options["username"], "")
+    repo = GitRepo(options["reponame"], user)
+    db = DB(user, repo)
+    db.delete()
+    repo.delete()
+elif p.hasActions("edit", "user"):
+    pass
+elif p.hasActions("edit", "user", "username"):
+    pass
+elif p.hasActions("edit", "user", "password"):
+    pass
+elif p.hasActions("edit", "repo", "reponame"):
+    pass
+elif p.hasActions("list", "user"):
+    pass
+elif p.hasActions("list", "repo"):
+    pass
+elif p.hasActions("list", "db"):
+    pass

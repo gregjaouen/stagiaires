@@ -9,15 +9,36 @@ colorama.init()
 class Maker:
     # Pseudo abstract class
     # Child class have to implement:
-    #   def getCreateName(self):
-    #   def getCmdToDo(self):
-    #   def createChecker(self):
-    #   CREATION_TYPE
+    #   GLOBAL
+    #       def getActionPerformedTo(self):
+    #       ACTION_TYPE
+    #   CREATE
+    #       def getCmdToCreate(self):
+    #       def createChecker(self):
+    #   DELETE
+    #       def getCmdToDelete(self):
+    #       def deleteChecker(self):
 
     def create(self):
-        if (self.createChecker()):
-            self.__printIn(colorama.Fore.GREEN, "Create {:s} {:s}: ".format(self. CREATION_TYPE, self.getCreateName()))
-            for cmd in self.getCmdToDo():
+        self.__crudAction(
+            self.createChecker(),
+            colorama.Fore.GREEN,
+            "Create",
+            self.getCmdToCreate()
+        )
+
+    def delete(self):
+        self.__crudAction(
+            self.deleteChecker(),
+            colorama.Fore.RED,
+            "Delete",
+            self.getCmdToDelete()
+        )
+    
+    def __crudAction(self, checker, color, actionName, cmds):
+        if (checker):
+            self.__printIn(color, "{:s} {:s} {:s}: ".format(actionName, self.ACTION_TYPE, self.getActionPerformedTo()))
+            for cmd in cmds:
                 self.__printIn(colorama.Fore.YELLOW, "{:s}".format(cmd))
                 self.execute(cmd)
 

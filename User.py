@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#TODO: Handle username verification
+#TODO: Better handling username verification
 
 from Maker import Maker
 from GitRepo import GitRepo
@@ -20,12 +20,15 @@ class User(Maker):
     DEFAULT_GIT_DIRECTORY = "git"
     DEFAULT_USER_DIRECTORIES = [DEFAULT_WEB_DIRECTORY, DEFAULT_GIT_DIRECTORY]
 
-    CREATION_TYPE = "user"
+    ACTION_TYPE = "user"
 
     def __init__(self, username, password):
         super().__init__()
         self.setUsername(username)
         self.setPassword(password)
+
+    def createDBUser(self):
+        DB.createUser(self)
 
     def createNewGitRepo(self, repoName):
         self.gitRepo = GitRepo(repoName, self)
@@ -45,20 +48,29 @@ class User(Maker):
     def setPassword(self, password):
         self.password = password
 
-    def getCreateName(self):
+    def getActionPerformedTo(self):
         return self.username
     
-    def getCmdToDo(self):
+    def getCmdToCreate(self):
         return [
                 self.__getUseradd(),
                 self.__getMkdirInUser(self.DEFAULT_USER_DIRECTORIES),
                 self.__getChownUserHome(),
                 # self.__getChownInUser(self.DEFAULT_USER_DIRECTORIES),
-                # self.__getQuota()
+                self.__getQuota()
         ]
 
     def createChecker(self):
         return (not self.isHomeDirectoryExists())
+
+    def getCmdToDelete(self):
+        return [
+                self.__getUserdel(),
+                # self.__getRmdirInUser(self.DEFAULT_USER_DIRECTORIES),
+        ]
+
+    def deleteChecker(self):
+        return (self.isHomeDirectoryExists())
 
     def isHomeDirectoryExists(self):
         return os.path.exists(self.getHomePath())
@@ -103,3 +115,6 @@ class User(Maker):
 
     def __getQuota(self):
         return "quotatool -u {:s} -bq 800M -l '950 Mb' /home".format(self.username)
+
+    def __getUserdel(self):
+        return "userdel -r {:s}".format(self.username)

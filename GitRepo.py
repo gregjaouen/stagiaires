@@ -10,7 +10,7 @@ class GitRepo(Maker):
     DEFAULT_GIT_DIRECTORIES = ["web", "git"]
     POST_RECEIVE = "post-receive"
 
-    CREATION_TYPE = "git repository"
+    ACTION_TYPE = "git repository"
 
     def __init__(self, repoName, user):
         super().__init__()
@@ -21,10 +21,10 @@ class GitRepo(Maker):
         super().create()
         self.__writePostReceiveHook()
 
-    def getCreateName(self):
+    def getActionPerformedTo(self):
         return self.repoName
     
-    def getCmdToDo(self):
+    def getCmdToCreate(self):
         return [
             self.__getGitInitCmd(),
             self.__getMkdirWebCmd(),
@@ -140,3 +140,18 @@ done
 
     def __makeRepoPath(self, sourcePath):
         return "{:s}/{:s}".format(sourcePath, self.repoName)
+
+    def getCmdToDelete(self):
+        return [
+                self.__getRmdirGitCmd(),
+                self.__getRmdirWebCmd(),
+        ]
+
+    def deleteChecker(self):
+        return (self.__isOneOfDirsExist())
+
+    def __getRmdirGitCmd(self):
+        return "rm -Rf {:s}".format(self.getRepoPath())
+
+    def __getRmdirWebCmd(self):
+        return "rm -Rf {:s}".format(self.getWebPath())
